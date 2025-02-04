@@ -5,12 +5,15 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryUtil;
 
+import backend.org.Mesh;
+import shaders.ShaderProgram;
+
 public class Window {
 
     //приватные переменные -> private vars for window, width and height
     private int width, height;
     private long window;
-
+    private Mesh mesh;
 
     public Window(){
         width = 800;
@@ -36,6 +39,33 @@ public class Window {
 
         GLFW.glfwSwapInterval(1);
         GLFW.glfwShowWindow(window);
+
+
+        ShaderProgram shaderProgram = new ShaderProgram("shaders/vertex.glsl", "shaders/fragment.glsl");
+
+        float[] vertices = {
+                -0.5f,  0.5f, 0.5f,  // 0
+                0.5f,  0.5f, 0.5f,  // 1
+                -0.5f, -0.5f, 0.5f,  // 2
+                0.5f, -0.5f, 0.5f,  // 3
+                -0.5f,  0.5f, -0.5f, // 4
+                0.5f,  0.5f, -0.5f, // 5
+                -0.5f, -0.5f, -0.5f, // 6
+                0.5f, -0.5f, -0.5f  // 7
+        };
+
+        int[] indices = {
+                0, 1, 2,  1, 3, 2,
+                4, 6, 5,  5, 6, 7,
+                4, 0, 6,  6, 0, 2,
+                1, 5, 3,  3, 5, 7,
+                4, 5, 0,  0, 5, 1,
+                2, 3, 6,  6, 3, 7
+        };
+
+
+        mesh = new Mesh(vertices, indices, shaderProgram);
+
     }
 
     public void update(){
@@ -46,6 +76,8 @@ public class Window {
             GL11.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 
+            mesh.render();
+
             // Обновление окна -> window update
             GLFW.glfwSwapBuffers(window);
             GLFW.glfwPollEvents();
@@ -54,6 +86,7 @@ public class Window {
 
     //функция для уборки/уничтожения окна -> function meant to close the window
     public void cleanUp(){
+        mesh.cleanUP();
         GLFW.glfwDestroyWindow(window);
         GLFW.glfwTerminate();
     }
