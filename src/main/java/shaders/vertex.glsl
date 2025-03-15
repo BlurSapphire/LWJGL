@@ -1,18 +1,10 @@
-#version 330 core
+#version 130
 
-layout(location = 0) in vec3 aPos;
-layout(location = 1) in vec3 aColor;
-
-out vec3 vertexColor;
-
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+in vec3 position; // входная вершина
+uniform mat4 model; // модельная матрица
+uniform mat4 view; // видовая матрица
+uniform mat4 projection; // проекционная матрица
 
 void main() {
-
-    gl_Position = projection * view * model * vec4(aPos, 1.0f);
-
-
-    vertexColor = aColor;
+    gl_Position = projection * view * model * vec4(position, 1.0);
 }
